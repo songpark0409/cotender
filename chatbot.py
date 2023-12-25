@@ -1,7 +1,7 @@
 from openai import OpenAI
 import streamlit as st
 import time
-import elevenlabs
+import pyttsx3
 
 assistant_id = "asst_zlQiYutOyBhPH9tpIZG0Mtib"
 thread_id = "thread_W1grA8BV3GqexQqqz2zO2IoD"
@@ -65,26 +65,13 @@ if prompt := st.chat_input():
     st.session_state.messages.append({"role": "assistant", "content": msg})
     st.chat_message("assistant").write(msg)
 
-    from elevenlabs import generate, play, set_api_key
-
-    elevenlabs.set_api_key("a28b5039b638aa1feabf22ac54827d30")
-
-    audio = generate(
-        text=msg,
-        voice="Clyde",
-        model="eleven_multilingual_v2"
-    )
-
-   # play(audio)
-
-    import sys
-
-    if user_input.lower() == 'yes':
-        play(audio)
-    elif user_input.lower() == 'no':
-        sys.exit()
-    else:
-        print('Type y or n')
+    engine = pyttsx3.init()
+    
+    engine.setProperty('rate', 200)
+    
+    engine.say(msg)
+    
+    engine.runAndWait()
 
     #response = client.chat.completions.create(model="gpt-3.5-turbo", messages=st.session_state.messages)
     #msg = response.choices[0].message.content
