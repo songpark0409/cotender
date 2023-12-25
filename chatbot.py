@@ -1,13 +1,13 @@
 from openai import OpenAI
 import streamlit as st
 import time
-import pyttsx3
+import elevenlabs
 
 assistant_id = "asst_zlQiYutOyBhPH9tpIZG0Mtib"
 thread_id = "thread_W1grA8BV3GqexQqqz2zO2IoD"
 
 with st.sidebar:
-    openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password", value="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")
+    openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password", value="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")
     "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
     user_input = st.selectbox('Do you want voice?',('yes','no'))
     st.write('You selected:', user_input)
@@ -65,13 +65,27 @@ if prompt := st.chat_input():
     st.session_state.messages.append({"role": "assistant", "content": msg})
     st.chat_message("assistant").write(msg)
 
-    engine = pyttsx3.init()
-    
-    engine.setProperty('rate', 200)
-    
-    engine.say(msg)
-    
-    engine.runAndWait()
+    from elevenlabs import generate, play, set_api_key
+
+    elevenlabs.set_api_key("a28b5039b638aa1feabf22ac54827d30")
+
+    audio = generate(
+        text=msg,
+        voice="Clyde",
+        model="eleven_multilingual_v2"
+    )
+
+   # play(audio)
+
+    import sys
+
+    if user_input.lower() == 'yes':
+        play(audio)
+    elif user_input.lower() == 'no':
+        sys.exit()
+    else:
+        print('Type y or n')
+
 
     #response = client.chat.completions.create(model="gpt-3.5-turbo", messages=st.session_state.messages)
     #msg = response.choices[0].message.content
